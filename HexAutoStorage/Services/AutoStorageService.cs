@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using HexAutoStorage.Core;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -65,25 +66,32 @@ namespace HexAutoStorage
 
             foreach (Collider collider in colliders)
             {
-                Container container = collider.GetComponentInParent<Container>();
+                Piece piece = collider.GetComponentInParent<Piece>();
+
+                if (piece == null || piece.GetCreator() != creator)
+                {
+                    continue;
+                }
+
+                string prefabName = piece.gameObject.name.Replace("(Clone)", "");
+
+                if (!StoragePrefabRules.TryGetStorageType(prefabName, out StorageType storageType))
+                {
+                    continue;
+                }
+
+                Container container = piece.GetComponentInChildren<Container>(true);
 
                 if (container == null)
                 {
                     continue;
                 }
 
-                Piece containerPiece = container.GetComponent<Piece>();
-
-                if (containerPiece == null || containerPiece.GetCreator() != creator)
-                {
-                    continue;
-                }
-
                 if (containers.Add(container))
                 {
-                    float distance = Vector3.Distance(position, container.transform.position);
+                    float distance = Vector3.Distance(position, piece.transform.position);
 
-                    Plugin.Log.LogInfo($"Found container {container.gameObject.name} at {distance:F2}m. Scan radius: {radius:F2}m.");
+                    Plugin.Log.LogInfo($"Found supported storage {prefabName} ({storageType}) at {distance:F2}m. Scan radius: {radius:F2}m.");
                 }
             }
 

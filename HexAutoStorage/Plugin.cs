@@ -38,6 +38,16 @@ namespace HexAutoStorage
             Log.LogInfo($"{PluginName} v{PluginVersion} loaded.");
         }
 
+        private void OnDestroy()
+        {
+            Log.LogInfo($"{PluginName} v{PluginVersion} unloaded.");
+
+            _harmonyInstance?.UnpatchSelf();
+            _harmonyInstance = null;
+            Instance = null;
+            Log = null;
+        }
+
         private void BindConfig()
         {
             ModEnabled = Config.Bind("General", "Enabled", true, "Enable or disable HexAutoStorage.");
@@ -53,16 +63,6 @@ namespace HexAutoStorage
             EditTagsShortcut = Config.Bind("Input", "EditTagsShortcut", new KeyboardShortcut(KeyCode.T, KeyCode.LeftShift), "Keyboard shortcut used to edit Auto Storage tags while looking at a container.");
 
             ShowStorageRadius = Config.Bind("General", "ShowRadiusVisual", false, "Show storage radius outline");
-        }
-
-        private void OnDestroy()
-        {
-            Log.LogInfo($"{PluginName} v{PluginVersion} unloaded.");
-
-            _harmonyInstance?.UnpatchSelf();
-            _harmonyInstance = null;
-            Instance = null;
-            Log = null;
         }
     }
 }

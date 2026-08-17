@@ -47,10 +47,6 @@
       <HintPath>..\..\..\bepinex_mod_libs\BepInEx.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Jotunn">
-      <HintPath>..\..\..\bepinex_mod_libs\Jotunn.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -73,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\StoragePrefabRules.cs" />
     <Compile Include="Features\SmelterHoverTracker.cs" />
     <Compile Include="Features\StorageRadiusVisualizer.cs" />
     <Compile Include="Patches\PlayerFindHoverObjectPatch.cs" />
