@@ -63,6 +63,14 @@
       <HintPath>..\..\..\valheim_mod_libraries\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>..\..\..\valheim_mod_libraries\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\..\..\valheim_mod_libraries\UnityEngine.InputLegacyModule.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\..\..\valheim_mod_libraries\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>False</Private>
@@ -71,12 +79,16 @@
   <ItemGroup>
     <Compile Include="Configuration\StorageConfig.cs" />
     <Compile Include="Core\StoragePrefabRules.cs" />
+    <Compile Include="Features\ContainerTagEditor.cs" />
     <Compile Include="Features\SmelterHoverTracker.cs" />
     <Compile Include="Features\StorageRadiusVisualizer.cs" />
+    <Compile Include="Patches\ContainerHoverTextPatch.cs" />
     <Compile Include="Patches\PlayerFindHoverObjectPatch.cs" />
+    <Compile Include="Patches\PlayerStartPatch.cs" />
     <Compile Include="Patches\SmelterAwakePatch.cs" />
     <Compile Include="Patches\SmelterSpawnPatch.cs" />
     <Compile Include="Patches\SmelterTestSpeedPatch.cs" />
+    <Compile Include="Patches\TextInputSetTextPatch.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AutoStorageService.cs" />

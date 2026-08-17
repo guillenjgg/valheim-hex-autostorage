@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace HexAutoStorage.Patches
 {
-    [HarmonyPatch(typeof(Player), nameof(Player.FindHoverObject))]
+    [HarmonyPatch(typeof(Player), "FindHoverObject")]
     internal static class PlayerFindHoverObjectPatch
     {
         [HarmonyPostfix]
@@ -15,13 +15,7 @@ namespace HexAutoStorage.Patches
                 return;
             }
 
-            if (hover == null)
-            {
-                SmelterHoverTracker.HoveredSmelter = null;
-                return;
-            }
-
-            SmelterHoverTracker.HoveredSmelter = hover.GetComponentInParent<Smelter>();
+            ContainerTagEditor.HoveredObject = hover;
         }
     }
 }

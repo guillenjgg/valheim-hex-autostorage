@@ -35,7 +35,7 @@ namespace HexAutoStorage.Configuration
             EditTagsShortcut = config.Bind(
                 "Input",
                 "EditTagsShortcut",
-                new KeyboardShortcut(KeyCode.LeftShift, KeyCode.T),
+                new KeyboardShortcut(KeyCode.P, KeyCode.LeftShift),
                 "Keyboard shortcut used to edit Auto Storage tags while looking at a container.");
         }
     }
