@@ -6,26 +6,31 @@ namespace HexAutoStorage.Features
     {
         private const int SegmentCount = 96;
         private const float HeightOffset = 0.05f;
-        private const float RaycastHeight = 10f;
-        private const float RaycastDistance = 30f;
 
         private LineRenderer _lineRenderer;
+        private Smelter _smelter;
 
         private void Awake()
         {
-            _lineRenderer = gameObject.AddComponent<LineRenderer>();
+            _smelter = GetComponent<Smelter>();
 
+            _lineRenderer = gameObject.AddComponent<LineRenderer>();
             _lineRenderer.loop = true;
             _lineRenderer.useWorldSpace = true;
             _lineRenderer.positionCount = SegmentCount;
             _lineRenderer.startWidth = 0.05f;
             _lineRenderer.endWidth = 0.05f;
             _lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            _lineRenderer.enabled = false;
         }
 
         private void Update()
         {
-            if (Plugin.Instance == null || !Plugin.ModEnabled.Value || !Plugin.ShowStorageRadius.Value)
+            if (Plugin.Instance == null ||
+                !Plugin.ModEnabled.Value ||
+                !Plugin.ShowStorageRadius.Value ||
+                _smelter == null ||
+                SmelterHoverTracker.HoveredSmelter != _smelter)
             {
                 _lineRenderer.enabled = false;
                 return;
@@ -34,6 +39,7 @@ namespace HexAutoStorage.Features
             _lineRenderer.enabled = true;
 
             float radius = Plugin.StorageRadius.Value;
+            float height = transform.position.y + HeightOffset;
 
             for (int i = 0; i < SegmentCount; i++)
             {
@@ -45,16 +51,7 @@ namespace HexAutoStorage.Features
                     Mathf.Sin(angle) * radius);
 
                 Vector3 worldPoint = transform.position + offset;
-                Vector3 rayOrigin = worldPoint + Vector3.up * RaycastHeight;
-
-                if (Physics.Raycast(rayOrigin, Vector3.down, out RaycastHit hit, RaycastDistance))
-                {
-                    worldPoint.y = hit.point.y + HeightOffset;
-                }
-                else
-                {
-                    worldPoint.y = transform.position.y + HeightOffset;
-                }
+                worldPoint.y = height;
 
                 _lineRenderer.SetPosition(i, worldPoint);
             }

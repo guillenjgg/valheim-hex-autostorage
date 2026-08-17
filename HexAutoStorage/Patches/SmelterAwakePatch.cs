@@ -19,7 +19,6 @@ namespace HexAutoStorage.Patches
             if (__instance.GetComponent<StorageRadiusVisualizer>() == null)
             {
                 __instance.gameObject.AddComponent<StorageRadiusVisualizer>();
-                Plugin.Log.LogInfo($"StorageRadiusVisualizer added to {__instance.gameObject.name}.");
             }
         }
     }

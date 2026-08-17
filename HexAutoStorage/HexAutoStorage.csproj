@@ -73,7 +73,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Features\SmelterHoverTracker.cs" />
     <Compile Include="Features\StorageRadiusVisualizer.cs" />
+    <Compile Include="Patches\PlayerFindHoverObjectPatch.cs" />
     <Compile Include="Patches\SmelterAwakePatch.cs" />
     <Compile Include="Patches\SmelterSpawnPatch.cs" />
     <Compile Include="Patches\SmelterTestSpeedPatch.cs" />
