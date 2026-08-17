@@ -100,7 +100,7 @@ namespace HexAutoStorage.Features
                 TextInput.instance,
                 new object[]
                 {
-                    "Auto Storage Tags",
+                    "Auto Storage Tags - Example: Copper,Tin,Bronze,Iron,Silver,Blackmetal,Flametal,Coal",
                     GetTags(container),
                     MaxTagLength
                 });

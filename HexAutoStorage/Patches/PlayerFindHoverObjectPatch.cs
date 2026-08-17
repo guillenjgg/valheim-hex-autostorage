@@ -16,6 +16,14 @@ namespace HexAutoStorage.Patches
             }
 
             ContainerTagEditor.HoveredObject = hover;
+
+            if (hover == null)
+            {
+                SmelterHoverTracker.HoveredSmelter = null;
+                return;
+            }
+
+            SmelterHoverTracker.HoveredSmelter = hover.GetComponentInParent<Smelter>();
         }
     }
 }
