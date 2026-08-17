@@ -73,6 +73,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Features\StorageRadiusVisualizer.cs" />
+    <Compile Include="Patches\SmelterAwakePatch.cs" />
     <Compile Include="Patches\SmelterSpawnPatch.cs" />
     <Compile Include="Patches\SmelterTestSpeedPatch.cs" />
     <Compile Include="Plugin.cs" />

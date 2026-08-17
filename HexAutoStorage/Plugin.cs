@@ -22,6 +22,7 @@ namespace HexAutoStorage
         internal static ConfigEntry<bool> ModEnabled;
         internal static ConfigEntry<float> StorageRadius;
         internal static ConfigEntry<KeyboardShortcut> EditTagsShortcut;
+        internal static ConfigEntry<bool> ShowStorageRadius;
 
         private void Awake()
         {
@@ -50,6 +51,8 @@ namespace HexAutoStorage
                 new AcceptableValueRange<float>(5f, 100f)));
             
             EditTagsShortcut = Config.Bind("Input", "EditTagsShortcut", new KeyboardShortcut(KeyCode.T, KeyCode.LeftShift), "Keyboard shortcut used to edit Auto Storage tags while looking at a container.");
+
+            ShowStorageRadius = Config.Bind("General", "ShowRadiusVisual", false, "Show storage radius outline");
         }
 
         private void OnDestroy()
