@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using HexAutoStorage.Configuration;
+using UnityEngine;
 
 namespace HexAutoStorage.Features
 {
@@ -27,8 +28,8 @@ namespace HexAutoStorage.Features
         private void Update()
         {
             if (Plugin.Instance == null ||
-                !Plugin.ModEnabled.Value ||
-                !Plugin.ShowStorageRadius.Value ||
+                !StorageConfig.ModEnabled.Value ||
+                !StorageConfig.ShowStorageRadius.Value ||
                 _smelter == null ||
                 SmelterHoverTracker.HoveredSmelter != _smelter)
             {
@@ -38,7 +39,7 @@ namespace HexAutoStorage.Features
 
             _lineRenderer.enabled = true;
 
-            float radius = Plugin.StorageRadius.Value;
+            float radius = StorageConfig.StorageRadius.Value;
             float height = transform.position.y + HeightOffset;
 
             for (int i = 0; i < SegmentCount; i++)

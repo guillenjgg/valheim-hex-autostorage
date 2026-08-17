@@ -1,9 +1,8 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
+using HexAutoStorage.Configuration;
 using System.Reflection;
-using UnityEngine;
 
 namespace HexAutoStorage
 {
@@ -19,17 +18,12 @@ namespace HexAutoStorage
         internal static ManualLogSource Log;
         internal static Plugin Instance;
 
-        internal static ConfigEntry<bool> ModEnabled;
-        internal static ConfigEntry<float> StorageRadius;
-        internal static ConfigEntry<KeyboardShortcut> EditTagsShortcut;
-        internal static ConfigEntry<bool> ShowStorageRadius;
-
         private void Awake()
         {
             Instance = this;
             Log = Logger;
 
-            BindConfig();
+            StorageConfig.Bind(Config);
 
             Assembly assembly = Assembly.GetExecutingAssembly();
             _harmonyInstance = new Harmony(PluginGuid);
@@ -46,23 +40,6 @@ namespace HexAutoStorage
             _harmonyInstance = null;
             Instance = null;
             Log = null;
-        }
-
-        private void BindConfig()
-        {
-            ModEnabled = Config.Bind("General", "Enabled", true, "Enable or disable HexAutoStorage.");
-
-            StorageRadius = Config.Bind(
-            "General",
-            "StorageRadius",
-            5f,
-            new ConfigDescription(
-                "Radius in meters that production stations search for nearby containers.",
-                new AcceptableValueRange<float>(5f, 100f)));
-            
-            EditTagsShortcut = Config.Bind("Input", "EditTagsShortcut", new KeyboardShortcut(KeyCode.T, KeyCode.LeftShift), "Keyboard shortcut used to edit Auto Storage tags while looking at a container.");
-
-            ShowStorageRadius = Config.Bind("General", "ShowRadiusVisual", false, "Show storage radius outline");
         }
     }
 }

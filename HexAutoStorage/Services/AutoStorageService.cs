@@ -1,4 +1,5 @@
-﻿using HexAutoStorage.Core;
+﻿using HexAutoStorage.Configuration;
+using HexAutoStorage.Core;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -32,7 +33,7 @@ namespace HexAutoStorage
 
             List<Container> containers = FindNearbyContainers(
                 smelter.transform.position,
-                Plugin.StorageRadius.Value,
+                StorageConfig.StorageRadius.Value,
                 smelterCreator);
 
             if (containers.Count == 0)

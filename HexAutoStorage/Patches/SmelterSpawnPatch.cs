@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using HexAutoStorage.Configuration;
 
 namespace HexAutoStorage.Patches
 {
@@ -8,7 +9,7 @@ namespace HexAutoStorage.Patches
         [HarmonyPrefix]
         internal static bool Prefix(Smelter __instance, string ore, int stack)
         {
-            if (Plugin.Instance == null || !Plugin.ModEnabled.Value)
+            if (Plugin.Instance == null || !StorageConfig.ModEnabled.Value)
             {
                 return true;
             }

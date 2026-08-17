@@ -69,6 +69,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\StorageConfig.cs" />
     <Compile Include="Core\StoragePrefabRules.cs" />
     <Compile Include="Features\SmelterHoverTracker.cs" />
     <Compile Include="Features\StorageRadiusVisualizer.cs" />
