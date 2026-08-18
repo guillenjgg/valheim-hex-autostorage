@@ -2,6 +2,7 @@
 using HexAutoStorage.Configuration;
 using HexAutoStorage.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -12,8 +13,28 @@ namespace HexAutoStorage.Features
     {
         private const string TagsKey = "HexAutoStorage_Tags";
         private const int MaxTagLength = 200;
+        private const string TagEditorTitle = "Auto Storage Tags - Example: Copper,Tin,Bronze,Iron,Silver,Blackmetal,Flametal,Coal,Flour,Eitr";
 
-        private static readonly MethodInfo TextInputShowMethod = AccessTools.Method(typeof(TextInput), "Show", new[] { typeof(string), typeof(string), typeof(int) });
+        private static readonly Dictionary<string, string> ValidTags =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { "Copper", "Copper" },
+                { "Tin", "Tin" },
+                { "Bronze", "Bronze" },
+                { "Iron", "Iron" },
+                { "Silver", "Silver" },
+                { "Blackmetal", "BlackMetal" },
+                { "Flametal", "FlametalNew" },
+                { "Coal", "Coal" },
+                { "Flour", "BarleyFlour" },
+                { "Eitr", "Eitr" }
+            };
+
+        private static readonly Dictionary<string, string> DisplayTags =
+            ValidTags.ToDictionary(entry => entry.Value, entry => entry.Key, StringComparer.OrdinalIgnoreCase);
+
+        private static readonly MethodInfo TextInputShowMethod =
+            AccessTools.Method(typeof(TextInput), "Show", new[] { typeof(string), typeof(string), typeof(int) });
 
         private static Container _editingContainer;
 
@@ -33,34 +54,25 @@ namespace HexAutoStorage.Features
 
         private void Update()
         {
-            if (Plugin.Instance == null || !StorageConfig.ModEnabled.Value || Player.m_localPlayer == null)
+            if (Plugin.Instance == null || !StorageConfig.ModEnabled.Value || Player.m_localPlayer == null || IsEditing)
             {
                 return;
             }
 
-            if (IsEditing)
+            if (StorageConfig.EditTagsShortcut.Value.IsDown())
             {
-                return;
+                TryOpenHoveredContainer();
             }
-
-            if (!StorageConfig.EditTagsShortcut.Value.IsDown())
-            {
-                return;
-            }
-
-            TryOpenHoveredContainer();
         }
 
         private void TryOpenHoveredContainer()
         {
-            GameObject hover = HoveredObject;
-
-            if (hover == null)
+            if (HoveredObject == null)
             {
                 return;
             }
 
-            Piece piece = hover.GetComponentInParent<Piece>();
+            Piece piece = HoveredObject.GetComponentInParent<Piece>();
 
             if (piece == null)
             {
@@ -75,15 +87,9 @@ namespace HexAutoStorage.Features
             }
 
             Container container = piece.GetComponentInChildren<Container>(true);
-
-            if (container == null)
-            {
-                return;
-            }
-
             ZNetView nview = piece.GetComponent<ZNetView>();
 
-            if (nview == null || !nview.IsValid())
+            if (container == null || nview == null || !nview.IsValid())
             {
                 return;
             }
@@ -100,47 +106,54 @@ namespace HexAutoStorage.Features
                 TextInput.instance,
                 new object[]
                 {
-                    "Auto Storage Tags - Example: Copper,Tin,Bronze,Iron,Silver,Blackmetal,Flametal,Coal",
-                    GetTags(container),
+                    TagEditorTitle,
+                    GetDisplayTags(container),
                     MaxTagLength
                 });
 
             Plugin.Log.LogInfo($"Opened Auto Storage tag editor for {prefabName}.");
         }
 
-        private static string NormalizeTags(string value)
+        private static bool TryNormalizeTags(string value, out string normalizedTags, out string invalidTag)
         {
+            normalizedTags = "";
+            invalidTag = "";
+
             if (string.IsNullOrWhiteSpace(value))
             {
-                return "";
+                return true;
             }
 
-            var tags = value
-                .Split(',')
-                .Select(tag => tag.Trim())
-                .Where(tag => !string.IsNullOrWhiteSpace(tag))
-                .Distinct(StringComparer.OrdinalIgnoreCase);
+            var normalized = new List<string>();
 
-            return string.Join(",", tags);
+            foreach (string rawTag in value.Split(','))
+            {
+                string tag = rawTag.Trim();
+
+                if (string.IsNullOrWhiteSpace(tag))
+                {
+                    continue;
+                }
+
+                if (!ValidTags.TryGetValue(tag, out string prefabName))
+                {
+                    invalidTag = tag;
+                    return false;
+                }
+
+                if (!normalized.Contains(prefabName, StringComparer.OrdinalIgnoreCase))
+                {
+                    normalized.Add(prefabName);
+                }
+            }
+
+            normalizedTags = string.Join(",", normalized);
+            return true;
         }
 
         internal static string GetTags(Container container)
         {
-            if (container == null)
-            {
-                return "";
-            }
-
-            Piece piece = container.GetComponentInParent<Piece>();
-
-            if (piece == null)
-            {
-                return "";
-            }
-
-            ZNetView nview = piece.GetComponent<ZNetView>();
-
-            if (nview == null || !nview.IsValid())
+            if (!TryGetContainerZNetView(container, out ZNetView nview))
             {
                 return "";
             }
@@ -148,9 +161,9 @@ namespace HexAutoStorage.Features
             return nview.GetZDO().GetString(TagsKey, "");
         }
 
-        internal static bool HasTag(Container container, string tag)
+        internal static bool HasTag(Container container, string prefabName)
         {
-            if (string.IsNullOrWhiteSpace(tag))
+            if (string.IsNullOrWhiteSpace(prefabName))
             {
                 return false;
             }
@@ -164,7 +177,7 @@ namespace HexAutoStorage.Features
 
             return tags
                 .Split(',')
-                .Any(existingTag => existingTag.Trim().Equals(tag, StringComparison.OrdinalIgnoreCase));
+                .Any(tag => tag.Trim().Equals(prefabName, StringComparison.OrdinalIgnoreCase));
         }
 
         internal static void SaveTags(string text)
@@ -174,27 +187,26 @@ namespace HexAutoStorage.Features
                 return;
             }
 
+            if (!TryGetContainerZNetView(_editingContainer, out ZNetView nview))
+            {
+                _editingContainer = null;
+                return;
+            }
+
+            if (!TryNormalizeTags(text, out string tags, out string invalidTag))
+            {
+                Player.m_localPlayer?.Message(MessageHud.MessageType.Center, $"Invalid Auto Storage tag: {invalidTag}");
+                Plugin.Log.LogWarning($"Invalid Auto Storage tag '{invalidTag}' rejected.");
+
+                _editingContainer = null;
+                return;
+            }
+
             Piece piece = _editingContainer.GetComponentInParent<Piece>();
-
-            if (piece == null)
-            {
-                _editingContainer = null;
-                return;
-            }
-
-            ZNetView nview = piece.GetComponent<ZNetView>();
-
-            if (nview == null || !nview.IsValid())
-            {
-                _editingContainer = null;
-                return;
-            }
-
-            string tags = NormalizeTags(text);
 
             nview.GetZDO().Set(TagsKey, tags);
 
-            Plugin.Log.LogInfo($"Saved Auto Storage tags '{tags}' to {piece.gameObject.name}.");
+            Plugin.Log.LogInfo($"Saved Auto Storage tags '{tags}' to {piece?.gameObject.name ?? "container"}.");
 
             _editingContainer = null;
         }
@@ -202,6 +214,55 @@ namespace HexAutoStorage.Features
         internal static void CancelEditing()
         {
             _editingContainer = null;
+        }
+
+        private static string GetDisplayTags(Container container)
+        {
+            string tags = GetTags(container);
+
+            if (string.IsNullOrWhiteSpace(tags))
+            {
+                return "";
+            }
+
+            var displayTags = new List<string>();
+
+            foreach (string rawTag in tags.Split(','))
+            {
+                string prefabName = rawTag.Trim();
+
+                if (DisplayTags.TryGetValue(prefabName, out string displayName))
+                {
+                    displayTags.Add(displayName);
+                }
+                else
+                {
+                    displayTags.Add(prefabName);
+                }
+            }
+
+            return string.Join(",", displayTags);
+        }
+
+        private static bool TryGetContainerZNetView(Container container, out ZNetView nview)
+        {
+            nview = null;
+
+            if (container == null)
+            {
+                return false;
+            }
+
+            Piece piece = container.GetComponentInParent<Piece>();
+
+            if (piece == null)
+            {
+                return false;
+            }
+
+            nview = piece.GetComponent<ZNetView>();
+
+            return nview != null && nview.IsValid();
         }
     }
 }
