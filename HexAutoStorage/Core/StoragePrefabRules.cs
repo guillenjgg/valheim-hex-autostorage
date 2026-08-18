@@ -12,7 +12,17 @@ namespace HexAutoStorage.Core
 
     internal static class StoragePrefabRules
     {
-        internal static readonly Dictionary<string, StorageType> SupportedPrefabs =
+        private static readonly HashSet<string> SupportedSmelterPrefabs = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "smelter",
+            "charcoal_kiln",
+            "blastfurnace",
+            "windmill",
+            "eitrrefinery",
+            "piece_spinningwheel"
+        };
+
+        private static readonly Dictionary<string, StorageType> SupportedPrefabs =
             new Dictionary<string, StorageType>(StringComparer.OrdinalIgnoreCase)
             {
                 { "piece_chest_wood", StorageType.Chest },
@@ -26,6 +36,11 @@ namespace HexAutoStorage.Core
         internal static bool TryGetStorageType(string prefabName, out StorageType storageType)
         {
             return SupportedPrefabs.TryGetValue(prefabName, out storageType);
+        }
+
+        internal static bool IsSupportedSmelter(string prefabName)
+        {
+            return SupportedSmelterPrefabs.Contains(prefabName);
         }
     }
 }

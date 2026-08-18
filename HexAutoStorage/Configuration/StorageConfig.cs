@@ -37,7 +37,7 @@ namespace HexAutoStorage.Configuration
                 "EditTagsShortcut",
                 new KeyboardShortcut(KeyCode.P, KeyCode.LeftShift),
                 "Keyboard shortcut used to edit Auto Storage tags while looking at a container. " +
-                "Supported tags: Copper, Tin, Bronze, Iron, Silver, Blackmetal, Flametal, Coal, Flour, Eitr.");
+                "Supported tags: Copper, Tin, Bronze, Iron, Silver, Blackmetal, Flametal, Coal, Flour, Eitr, Linen");
         }
     }
 }

@@ -11,7 +11,7 @@ namespace HexAutoStorage
     {
         private const string PluginGuid = "com.hex.autostorage";
         private const string PluginName = "HexAutoStorage";
-        private const string PluginVersion = "1.0.0";
+        private const string PluginVersion = "1.1.0";
 
         private Harmony _harmonyInstance;
 
@@ -28,17 +28,13 @@ namespace HexAutoStorage
             Assembly assembly = Assembly.GetExecutingAssembly();
             _harmonyInstance = new Harmony(PluginGuid);
             _harmonyInstance.PatchAll(assembly);
-
-#if DEBUG
+            
             Log.LogInfo($"{PluginName} v{PluginVersion} loaded.");
-#endif
         }
 
         private void OnDestroy()
         {
-#if DEBUG
             Log.LogInfo($"{PluginName} v{PluginVersion} unloaded.");
-#endif
 
             _harmonyInstance?.UnpatchSelf();
             _harmonyInstance = null;

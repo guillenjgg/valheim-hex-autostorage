@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using HexAutoStorage.Core;
 using HexAutoStorage.Features;
 
 namespace HexAutoStorage.Patches
@@ -14,14 +15,20 @@ namespace HexAutoStorage.Patches
                 return;
             }
 
-            // Only add visualizer if it doesn't exist (guards against multiple Awake calls)
+            string prefabName = __instance.gameObject.name.Replace("(Clone)", "");
+
+            if (!StoragePrefabRules.IsSupportedSmelter(prefabName))
+            {
+                return;
+            }
+
             if (__instance.GetComponent<StorageRadiusVisualizer>() == null)
             {
                 __instance.gameObject.AddComponent<StorageRadiusVisualizer>();
 
 #if DEBUG
-                // Only log once when actually adding the component
-                Plugin.Log.LogInfo($"StorageRadiusVisualizer added to {__instance.gameObject.name} (Instance: {__instance.GetInstanceID()}).");
+                __instance.m_secPerProduct = 1f;
+                Plugin.Log.LogDebug($"StorageRadiusVisualizer added to {prefabName} (Instance: {__instance.GetInstanceID()}).");
 #endif
             }
         }
