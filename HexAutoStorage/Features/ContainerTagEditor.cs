@@ -216,7 +216,7 @@ namespace HexAutoStorage.Features
             _editingContainer = null;
         }
 
-        private static string GetDisplayTags(Container container)
+        internal static string GetDisplayTags(Container container)
         {
             string tags = GetTags(container);
 

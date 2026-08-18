@@ -32,8 +32,15 @@ namespace HexAutoStorage.Patches
             }
 
             string shortcut = ContainerTagEditor.GetEditTagsShortcutDisplay();
+            string tags = ContainerTagEditor.GetDisplayTags(__instance);
+
+            if (string.IsNullOrWhiteSpace(tags))
+            {
+                tags = "None";
+            }
 
             __result += $"\n[<color=#ffff00ff><b>{shortcut}</b></color>] Edit Auto Storage Tags";
+            __result += $"\n[<color=#ffff00ff><b>Tags:</b></color> {tags}]";
         }
     }
 }
