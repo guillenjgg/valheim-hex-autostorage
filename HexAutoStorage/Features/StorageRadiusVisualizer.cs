@@ -21,9 +21,8 @@ namespace HexAutoStorage.Features
 
             if (_smelter == null)
             {
-#if DEBUG
-                Plugin.Log.LogWarning($"StorageRadiusVisualizer attached to non-Smelter object: {gameObject.name}");
-#endif
+                Plugin.Log.LogDebug($"StorageRadiusVisualizer attached to non-Smelter object: {gameObject.name}");
+                
                 Destroy(this);
                 return;
             }
@@ -33,7 +32,7 @@ namespace HexAutoStorage.Features
 #if DEBUG
             if (_terrainMask == 0)
             {
-                Plugin.Log.LogWarning("StorageRadiusVisualizer could not find the 'terrain' layer.");
+                Plugin.Log.LogDebug("StorageRadiusVisualizer could not find the 'terrain' layer.");
             }
 #endif
 

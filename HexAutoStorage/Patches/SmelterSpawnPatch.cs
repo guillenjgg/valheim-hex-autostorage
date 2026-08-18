@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using HexAutoStorage.Configuration;
+using HexAutoStorage.Core;
 
 namespace HexAutoStorage.Patches
 {
@@ -10,6 +11,13 @@ namespace HexAutoStorage.Patches
         internal static bool Prefix(Smelter __instance, string ore, int stack)
         {
             if (Plugin.Instance == null || !StorageConfig.ModEnabled.Value)
+            {
+                return true;
+            }
+
+            string prefabName = __instance.gameObject.name.Replace("(Clone)", "");
+
+            if (!StoragePrefabRules.IsSupportedSmelter(prefabName))
             {
                 return true;
             }

@@ -97,9 +97,7 @@ namespace HexAutoStorage.Features
 
             if (TextInput.instance == null)
             {
-#if DEBUG
-                Plugin.Log.LogWarning("Unable to open Auto Storage tag editor because TextInput.instance is null.");
-#endif
+                Plugin.Log.LogDebug("Unable to open Auto Storage tag editor because TextInput.instance is null.");
                 return;
             }
 
@@ -114,9 +112,7 @@ namespace HexAutoStorage.Features
                     MaxTagLength
                 });
 
-#if DEBUG
-            Plugin.Log.LogInfo($"Opened Auto Storage tag editor for {prefabName}.");
-#endif
+            Plugin.Log.LogDebug($"Opened Auto Storage tag editor for {prefabName}.");
         }
 
         private static bool TryNormalizeTags(string value, out string normalizedTags, out string invalidTag)
@@ -201,9 +197,8 @@ namespace HexAutoStorage.Features
             if (!TryNormalizeTags(text, out string tags, out string invalidTag))
             {
                 Player.m_localPlayer?.Message(MessageHud.MessageType.Center, $"Invalid Auto Storage tag: {invalidTag}");
-#if DEBUG
-                Plugin.Log.LogWarning($"Invalid Auto Storage tag '{invalidTag}' rejected.");
-#endif
+                
+                Plugin.Log.LogDebug($"Invalid Auto Storage tag '{invalidTag}' rejected.");
 
                 _editingContainer = null;
                 return;
@@ -213,9 +208,7 @@ namespace HexAutoStorage.Features
 
             nview.GetZDO().Set(TagsKey, tags);
 
-#if DEBUG
-            Plugin.Log.LogInfo($"Saved Auto Storage tags '{tags}' to {piece?.gameObject.name ?? "container"}.");
-#endif
+            Plugin.Log.LogDebug($"Saved Auto Storage tags '{tags}' to {piece?.gameObject.name ?? "container"}.");
 
             _editingContainer = null;
         }

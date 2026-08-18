@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using HexAutoStorage.Core;
 using HexAutoStorage.Features;
 using UnityEngine;
 
@@ -18,6 +19,14 @@ namespace HexAutoStorage.Patches
             ContainerTagEditor.HoveredObject = hover;
 
             if (hover == null)
+            {
+                SmelterHoverTracker.HoveredSmelter = null;
+                return;
+            }
+
+            string prefabName = hover.gameObject.name.Replace("(Clone)", "");
+
+            if(!StoragePrefabRules.IsSupportedSmelter(prefabName))
             {
                 SmelterHoverTracker.HoveredSmelter = null;
                 return;
