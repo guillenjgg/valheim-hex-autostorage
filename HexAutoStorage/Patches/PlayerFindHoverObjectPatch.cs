@@ -20,19 +20,29 @@ namespace HexAutoStorage.Patches
 
             if (hover == null)
             {
-                SmelterHoverTracker.HoveredSmelter = null;
+                StorageRadiusVisualizer.HoveredSmelter = null;
                 return;
             }
 
-            string prefabName = hover.gameObject.name.Replace("(Clone)", "");
+            Smelter smelter = hover.GetComponentInParent<Smelter>();
 
-            if(!StoragePrefabRules.IsSupportedSmelter(prefabName))
+            if (smelter == null)
             {
-                SmelterHoverTracker.HoveredSmelter = null;
+                StorageRadiusVisualizer.HoveredSmelter = null;
                 return;
             }
 
-            SmelterHoverTracker.HoveredSmelter = hover.GetComponentInParent<Smelter>();
+            string prefabName = smelter.gameObject.name.Replace("(Clone)", "");
+
+            Plugin.Log.LogDebug($"FindHoverObject pathc Prefab name: {prefabName}");
+
+            if (!StoragePrefabRules.IsSupportedSmelter(prefabName))
+            {
+                StorageRadiusVisualizer.HoveredSmelter = null;
+                return;
+            }
+
+            StorageRadiusVisualizer.HoveredSmelter = smelter;
         }
     }
 }

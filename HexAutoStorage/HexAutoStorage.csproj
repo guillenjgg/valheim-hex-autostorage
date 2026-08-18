@@ -80,7 +80,6 @@
     <Compile Include="Configuration\StorageConfig.cs" />
     <Compile Include="Core\StoragePrefabRules.cs" />
     <Compile Include="Features\ContainerTagEditor.cs" />
-    <Compile Include="Features\SmelterHoverTracker.cs" />
     <Compile Include="Features\StorageRadiusVisualizer.cs" />
     <Compile Include="Patches\ContainerHoverTextPatch.cs" />
     <Compile Include="Patches\PlayerFindHoverObjectPatch.cs" />

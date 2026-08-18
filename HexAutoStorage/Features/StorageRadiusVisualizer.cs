@@ -15,6 +15,8 @@ namespace HexAutoStorage.Features
         private Smelter _smelter;
         private int _terrainMask;
 
+        internal static Smelter HoveredSmelter;
+
         private void Awake()
         {
             _smelter = GetComponent<Smelter>();
@@ -28,13 +30,6 @@ namespace HexAutoStorage.Features
             }
 
             _terrainMask = LayerMask.GetMask("terrain");
-
-#if DEBUG
-            if (_terrainMask == 0)
-            {
-                Plugin.Log.LogDebug("StorageRadiusVisualizer could not find the 'terrain' layer.");
-            }
-#endif
 
             _lineRenderer = gameObject.AddComponent<LineRenderer>();
             _lineRenderer.loop = true;
@@ -56,7 +51,7 @@ namespace HexAutoStorage.Features
             if (Plugin.Instance == null ||
                 !StorageConfig.ModEnabled.Value ||
                 !StorageConfig.ShowStorageRadius.Value ||
-                SmelterHoverTracker.HoveredSmelter != _smelter)
+                HoveredSmelter != _smelter)
             {
                 _lineRenderer.enabled = false;
                 return;
