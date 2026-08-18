@@ -10,23 +10,48 @@ namespace HexAutoStorage.Features
 
         private LineRenderer _lineRenderer;
         private Smelter _smelter;
+        private bool _initialized;
 
         private void Awake()
         {
             _smelter = GetComponent<Smelter>();
 
-            _lineRenderer = gameObject.AddComponent<LineRenderer>();
-            _lineRenderer.loop = true;
-            _lineRenderer.useWorldSpace = true;
-            _lineRenderer.positionCount = SegmentCount;
-            _lineRenderer.startWidth = 0.05f;
-            _lineRenderer.endWidth = 0.05f;
-            _lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-            _lineRenderer.enabled = false;
+            if (_smelter == null)
+            {
+                Plugin.Log.LogWarning($"StorageRadiusVisualizer attached to non-Smelter object: {gameObject.name}");
+                Destroy(this);
+                return;
+            }
+
+            InitializeLineRenderer();
+            _initialized = true;
+        }
+
+        private void InitializeLineRenderer()
+        {
+            // Check if LineRenderer already exists (in case of multiple Awake calls)
+            _lineRenderer = GetComponent<LineRenderer>();
+
+            if (_lineRenderer == null)
+            {
+                _lineRenderer = gameObject.AddComponent<LineRenderer>();
+                _lineRenderer.loop = true;
+                _lineRenderer.useWorldSpace = true;
+                _lineRenderer.positionCount = SegmentCount;
+                _lineRenderer.startWidth = 0.05f;
+                _lineRenderer.endWidth = 0.05f;
+                _lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+                _lineRenderer.enabled = false;
+            }
         }
 
         private void Update()
         {
+            if (!_initialized || _lineRenderer == null)
+            {
+                return;
+            }
+
             if (Plugin.Instance == null ||
                 !StorageConfig.ModEnabled.Value ||
                 !StorageConfig.ShowStorageRadius.Value ||
@@ -60,10 +85,19 @@ namespace HexAutoStorage.Features
 
         private void OnDestroy()
         {
-            if (_lineRenderer != null && _lineRenderer.material != null)
+            // Clean up resources properly
+            if (_lineRenderer != null)
             {
-                Destroy(_lineRenderer.material);
+                if (_lineRenderer.material != null)
+                {
+                    Destroy(_lineRenderer.material);
+                }
+
+                // Destroy the LineRenderer component if we created it
+                Destroy(_lineRenderer);
             }
+
+            _initialized = false;
         }
     }
 }

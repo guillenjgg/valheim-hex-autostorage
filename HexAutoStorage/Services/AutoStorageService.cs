@@ -1,5 +1,6 @@
 ﻿using HexAutoStorage.Configuration;
 using HexAutoStorage.Core;
+using HexAutoStorage.Features;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -43,6 +44,22 @@ namespace HexAutoStorage
 
             string prefabName = producedItem.gameObject.name;
 
+            // Priority 1: Tagged containers with matching tag
+            List<Container> taggedContainers = containers
+                .Where(container => ContainerTagEditor.HasTag(container, prefabName))
+                .OrderBy(container => Vector3.SqrMagnitude(container.transform.position - smelter.transform.position))
+                .ToList();
+
+            foreach (Container container in taggedContainers)
+            {
+                if (TryAddToContainer(container, producedItem, stack))
+                {
+                    Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in tagged container {container.gameObject.name}.");
+                    return true;
+                }
+            }
+
+            // Priority 2: Containers that already contain the item
             List<Container> existingItemContainers = containers
                 .Where(container => ContainsProducedItem(container, prefabName))
                 .OrderBy(container => Vector3.SqrMagnitude(container.transform.position - smelter.transform.position))
@@ -52,7 +69,7 @@ namespace HexAutoStorage
             {
                 if (TryAddToContainer(container, producedItem, stack))
                 {
-                    Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in {container.gameObject.name}.");
+                    Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in existing container {container.gameObject.name}.");
                     return true;
                 }
             }
