@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using HarmonyLib;
 using HexAutoStorage.Features;
 
 namespace HexAutoStorage.Patches

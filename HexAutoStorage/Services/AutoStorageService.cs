@@ -44,7 +44,7 @@ namespace HexAutoStorage
 
             string prefabName = producedItem.gameObject.name;
 
-            // Priority 1: Tagged containers with matching tag
+            // Priority 1: Matching tagged containers
             List<Container> taggedContainers = containers
                 .Where(container => ContainerTagEditor.HasTag(container, prefabName))
                 .OrderBy(container => Vector3.SqrMagnitude(container.transform.position - smelter.transform.position))
@@ -59,9 +59,11 @@ namespace HexAutoStorage
                 }
             }
 
-            // Priority 2: Containers that already contain the item
+            // Priority 2: Untagged containers that already contain the item
             List<Container> existingItemContainers = containers
-                .Where(container => ContainsProducedItem(container, prefabName))
+                .Where(container =>
+                    !HasTags(container) &&
+                    ContainsProducedItem(container, prefabName))
                 .OrderBy(container => Vector3.SqrMagnitude(container.transform.position - smelter.transform.position))
                 .ToList();
 
@@ -69,7 +71,24 @@ namespace HexAutoStorage
             {
                 if (TryAddToContainer(container, producedItem, stack))
                 {
-                    Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in existing container {container.gameObject.name}.");
+                    Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in untagged existing-item container {container.gameObject.name}.");
+                    return true;
+                }
+            }
+
+            // Priority 3: Any other untagged supported container
+            List<Container> untaggedContainers = containers
+                .Where(container =>
+                    !HasTags(container) &&
+                    !ContainsProducedItem(container, prefabName))
+                .OrderBy(container => Vector3.SqrMagnitude(container.transform.position - smelter.transform.position))
+                .ToList();
+
+            foreach (Container container in untaggedContainers)
+            {
+                if (TryAddToContainer(container, producedItem, stack))
+                {
+                    Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in untagged container {container.gameObject.name}.");
                     return true;
                 }
             }
@@ -114,6 +133,11 @@ namespace HexAutoStorage
             }
 
             return containers.ToList();
+        }
+
+        private static bool HasTags(Container container)
+        {
+            return !string.IsNullOrWhiteSpace(ContainerTagEditor.GetTags(container));
         }
 
         private static bool ContainsProducedItem(Container container, string prefabName)

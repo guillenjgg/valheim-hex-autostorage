@@ -10,7 +10,6 @@ namespace HexAutoStorage.Features
 
         private LineRenderer _lineRenderer;
         private Smelter _smelter;
-        private bool _initialized;
 
         private void Awake()
         {
@@ -23,31 +22,19 @@ namespace HexAutoStorage.Features
                 return;
             }
 
-            InitializeLineRenderer();
-            _initialized = true;
-        }
-
-        private void InitializeLineRenderer()
-        {
-            // Check if LineRenderer already exists (in case of multiple Awake calls)
-            _lineRenderer = GetComponent<LineRenderer>();
-
-            if (_lineRenderer == null)
-            {
-                _lineRenderer = gameObject.AddComponent<LineRenderer>();
-                _lineRenderer.loop = true;
-                _lineRenderer.useWorldSpace = true;
-                _lineRenderer.positionCount = SegmentCount;
-                _lineRenderer.startWidth = 0.05f;
-                _lineRenderer.endWidth = 0.05f;
-                _lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-                _lineRenderer.enabled = false;
-            }
+            _lineRenderer = gameObject.AddComponent<LineRenderer>();
+            _lineRenderer.loop = true;
+            _lineRenderer.useWorldSpace = true;
+            _lineRenderer.positionCount = SegmentCount;
+            _lineRenderer.startWidth = 0.05f;
+            _lineRenderer.endWidth = 0.05f;
+            _lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            _lineRenderer.enabled = false;
         }
 
         private void Update()
         {
-            if (!_initialized || _lineRenderer == null)
+            if (_lineRenderer == null)
             {
                 return;
             }
@@ -55,7 +42,6 @@ namespace HexAutoStorage.Features
             if (Plugin.Instance == null ||
                 !StorageConfig.ModEnabled.Value ||
                 !StorageConfig.ShowStorageRadius.Value ||
-                _smelter == null ||
                 SmelterHoverTracker.HoveredSmelter != _smelter)
             {
                 _lineRenderer.enabled = false;
@@ -85,19 +71,18 @@ namespace HexAutoStorage.Features
 
         private void OnDestroy()
         {
-            // Clean up resources properly
-            if (_lineRenderer != null)
+            if (_lineRenderer == null)
             {
-                if (_lineRenderer.material != null)
-                {
-                    Destroy(_lineRenderer.material);
-                }
-
-                // Destroy the LineRenderer component if we created it
-                Destroy(_lineRenderer);
+                return;
             }
 
-            _initialized = false;
+            if (_lineRenderer.material != null)
+            {
+                Destroy(_lineRenderer.material);
+            }
+
+            Destroy(_lineRenderer);
+            _lineRenderer = null;
         }
     }
 }
