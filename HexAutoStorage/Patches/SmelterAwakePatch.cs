@@ -19,8 +19,10 @@ namespace HexAutoStorage.Patches
             {
                 __instance.gameObject.AddComponent<StorageRadiusVisualizer>();
 
+#if DEBUG
                 // Only log once when actually adding the component
                 Plugin.Log.LogInfo($"StorageRadiusVisualizer added to {__instance.gameObject.name} (Instance: {__instance.GetInstanceID()}).");
+#endif
             }
         }
     }

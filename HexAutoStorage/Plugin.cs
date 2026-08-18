@@ -29,12 +29,16 @@ namespace HexAutoStorage
             _harmonyInstance = new Harmony(PluginGuid);
             _harmonyInstance.PatchAll(assembly);
 
+#if DEBUG
             Log.LogInfo($"{PluginName} v{PluginVersion} loaded.");
+#endif
         }
 
         private void OnDestroy()
         {
+#if DEBUG
             Log.LogInfo($"{PluginName} v{PluginVersion} unloaded.");
+#endif
 
             _harmonyInstance?.UnpatchSelf();
             _harmonyInstance = null;

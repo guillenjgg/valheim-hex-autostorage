@@ -22,7 +22,9 @@ namespace HexAutoStorage.Patches
             if (__instance.GetComponent<ContainerTagEditor>() == null)
             {
                 __instance.gameObject.AddComponent<ContainerTagEditor>();
+#if DEBUG
                 Plugin.Log.LogInfo("ContainerTagEditor added to local player.");
+#endif
             }
         }
     }

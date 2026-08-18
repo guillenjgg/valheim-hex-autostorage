@@ -54,7 +54,9 @@ namespace HexAutoStorage
             {
                 if (TryAddToContainer(container, producedItem, stack))
                 {
+#if DEBUG
                     Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in tagged container {container.gameObject.name}.");
+#endif
                     return true;
                 }
             }
@@ -71,7 +73,9 @@ namespace HexAutoStorage
             {
                 if (TryAddToContainer(container, producedItem, stack))
                 {
+#if DEBUG
                     Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in untagged existing-item container {container.gameObject.name}.");
+#endif
                     return true;
                 }
             }
@@ -88,7 +92,9 @@ namespace HexAutoStorage
             {
                 if (TryAddToContainer(container, producedItem, stack))
                 {
+#if DEBUG
                     Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in untagged container {container.gameObject.name}.");
+#endif
                     return true;
                 }
             }
@@ -126,9 +132,10 @@ namespace HexAutoStorage
 
                 if (containers.Add(container))
                 {
+#if DEBUG
                     float distance = Vector3.Distance(position, piece.transform.position);
-
                     Plugin.Log.LogInfo($"Found supported storage {prefabName} ({storageType}) at {distance:F2}m. Scan radius: {radius:F2}m.");
+#endif
                 }
             }
 

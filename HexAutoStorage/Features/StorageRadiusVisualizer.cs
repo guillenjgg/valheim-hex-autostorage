@@ -17,7 +17,9 @@ namespace HexAutoStorage.Features
 
             if (_smelter == null)
             {
+#if DEBUG
                 Plugin.Log.LogWarning($"StorageRadiusVisualizer attached to non-Smelter object: {gameObject.name}");
+#endif
                 Destroy(this);
                 return;
             }
