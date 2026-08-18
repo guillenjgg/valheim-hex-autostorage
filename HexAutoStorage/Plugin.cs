@@ -11,7 +11,7 @@ namespace HexAutoStorage
     {
         private const string PluginGuid = "com.hex.autostorage";
         private const string PluginName = "HexAutoStorage";
-        private const string PluginVersion = "1.0.0";
+        private const string PluginVersion = "1.1.0";
 
         private Harmony _harmonyInstance;
 
