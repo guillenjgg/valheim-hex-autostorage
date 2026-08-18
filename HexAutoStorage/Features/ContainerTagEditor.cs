@@ -13,7 +13,7 @@ namespace HexAutoStorage.Features
     {
         private const string TagsKey = "HexAutoStorage_Tags";
         private const int MaxTagLength = 200;
-        private const string TagEditorTitle = "Auto Storage Tags - Example: Copper,Tin,Bronze,Iron,Silver,Blackmetal,Flametal,Coal,Flour,Eitr";
+        private const string TagEditorTitle = "Auto Storage Tags - Example: Copper,Tin,Bronze,Iron,Silver,Blackmetal,Flametal,Coal,Flour,Eitr,Linen";
 
         private static readonly Dictionary<string, string> ValidTags =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -27,7 +27,8 @@ namespace HexAutoStorage.Features
                 { "Flametal", "FlametalNew" },
                 { "Coal", "Coal" },
                 { "Flour", "BarleyFlour" },
-                { "Eitr", "Eitr" }
+                { "Eitr", "Eitr" },
+                { "Linen", "LinenThread" }
             };
 
         private static readonly Dictionary<string, string> DisplayTags =

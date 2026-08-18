@@ -14,13 +14,12 @@ namespace HexAutoStorage.Patches
                 return;
             }
 
-            // Only add visualizer if it doesn't exist (guards against multiple Awake calls)
             if (__instance.GetComponent<StorageRadiusVisualizer>() == null)
             {
                 __instance.gameObject.AddComponent<StorageRadiusVisualizer>();
 
 #if DEBUG
-                // Only log once when actually adding the component
+                __instance.m_secPerProduct = 1f;
                 Plugin.Log.LogInfo($"StorageRadiusVisualizer added to {__instance.gameObject.name} (Instance: {__instance.GetInstanceID()}).");
 #endif
             }
