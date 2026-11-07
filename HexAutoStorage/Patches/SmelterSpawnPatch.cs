@@ -22,11 +22,13 @@ namespace HexAutoStorage.Patches
                 return true;
             }
 
+            // Match vanilla GetItemConversion without directly calling its private method.
+            // Fuel-only stations such as the Frost Kiln have no input item.
             Smelter.ItemConversion conversion = null;
 
             foreach (Smelter.ItemConversion itemConversion in __instance.m_conversion)
             {
-                if (itemConversion.m_from != null && itemConversion.m_from.gameObject.name == ore)
+                if (itemConversion.m_from == null || itemConversion.m_from.gameObject.name == ore)
                 {
                     conversion = itemConversion;
                     break;

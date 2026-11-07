@@ -80,25 +80,6 @@ namespace HexAutoStorage
                 }
             }
 
-            // Priority 3: Any other untagged supported container
-            List<Container> untaggedContainers = containers
-                .Where(container =>
-                    !HasTags(container) &&
-                    !ContainsProducedItem(container, prefabName))
-                .OrderBy(container => Vector3.SqrMagnitude(container.transform.position - smelter.transform.position))
-                .ToList();
-
-            foreach (Container container in untaggedContainers)
-            {
-                if (TryAddToContainer(container, producedItem, stack))
-                {
-#if DEBUG
-                    Plugin.Log.LogInfo($"Stored {stack}x {prefabName} in untagged container {container.gameObject.name}.");
-#endif
-                    return true;
-                }
-            }
-
             return false;
         }
 

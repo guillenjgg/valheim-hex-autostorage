@@ -16,6 +16,7 @@ namespace HexAutoStorage.Core
         {
             "smelter",
             "charcoal_kiln",
+            "piece_FrostKiln",
             "blastfurnace",
             "windmill",
             "eitrrefinery",
