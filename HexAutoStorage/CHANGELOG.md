@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.1.2
+
+### Added
+- Support for the Frost Kiln
+- Auto storage for deep north resources:
+- Bloodgold
+- LiquidFrost
+
+### Changed
+- Auto storage now only uses matching tagged containers or untagged containers already holding the produced item. Otherwise, items drop normally.
+- Compiled with Valheim `v1.0.21`
+- Updated BepInEx dependency `denikson-BepInExPack_Valheim-5.4.2360`
+
 ## v1.1.1
 
 ### Added

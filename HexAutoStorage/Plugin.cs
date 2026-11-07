@@ -11,7 +11,7 @@ namespace HexAutoStorage
     {
         private const string PluginGuid = "com.hex.autostorage";
         private const string PluginName = "HexAutoStorage";
-        private const string PluginVersion = "1.1.1";
+        private const string PluginVersion = "1.1.2";
 
         private Harmony _harmonyInstance;
 
@@ -25,9 +25,8 @@ namespace HexAutoStorage
 
             StorageConfig.Bind(Config);
 
-            Assembly assembly = Assembly.GetExecutingAssembly();
             _harmonyInstance = new Harmony(PluginGuid);
-            _harmonyInstance.PatchAll(assembly);
+            _harmonyInstance.PatchAll(Assembly.GetExecutingAssembly());
             
             Log.LogInfo($"{PluginName} v{PluginVersion} loaded.");
         }

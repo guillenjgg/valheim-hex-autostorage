@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using HexAutoStorage.Configuration;
 using HexAutoStorage.Core;
 using System;
@@ -13,7 +13,7 @@ namespace HexAutoStorage.Features
     {
         private const string TagsKey = "HexAutoStorage_Tags";
         private const int MaxTagLength = 200;
-        private const string TagEditorTitle = "Auto Storage Tags - Example: Copper,Tin,Bronze,Iron,Silver,Blackmetal,Flametal,Coal,Flour,Eitr,Linen";
+        private const string TagEditorTitle = "Auto Storage Tags - Example: Copper,Tin,Bronze,Iron,Silver,Blackmetal,Flametal,Coal,Flour,Eitr,Linen,Bloodgold,LiquidFrost";
 
         private static readonly Dictionary<string, string> ValidTags =
             new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -28,7 +28,9 @@ namespace HexAutoStorage.Features
                 { "Coal", "Coal" },
                 { "Flour", "BarleyFlour" },
                 { "Eitr", "Eitr" },
-                { "Linen", "LinenThread" }
+                { "Linen", "LinenThread" },
+                { "Bloodgold", "Gold" },
+                { "LiquidFrost", "FrozenFuel" }
             };
 
         private static readonly Dictionary<string, string> DisplayTags =
