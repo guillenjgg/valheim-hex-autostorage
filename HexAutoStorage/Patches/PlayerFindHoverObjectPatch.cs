@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+using HexAutoStorage.Configuration;
+using HarmonyLib;
 using HexAutoStorage.Core;
 using HexAutoStorage.Features;
 using UnityEngine;
@@ -34,7 +35,7 @@ namespace HexAutoStorage.Patches
 
             string prefabName = smelter.gameObject.name.Replace("(Clone)", "");
 
-            Plugin.Log.LogDebug($"FindHoverObject pathc Prefab name: {prefabName}");
+            StorageConfig.DebugLog($"FindHoverObject pathc Prefab name: {prefabName}");
 
             if (!StoragePrefabRules.IsSupportedSmelter(prefabName))
             {

@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+using HexAutoStorage.Configuration;
+using HarmonyLib;
 using HexAutoStorage.Core;
 using HexAutoStorage.Features;
 
@@ -28,8 +29,8 @@ namespace HexAutoStorage.Patches
 
 #if DEBUG
                 __instance.m_secPerProduct = 1f;
-                Plugin.Log.LogDebug($"StorageRadiusVisualizer added to {prefabName} (Instance: {__instance.GetInstanceID()}).");
 #endif
+                StorageConfig.DebugLog($"StorageRadiusVisualizer added to {prefabName} (Instance: {__instance.GetInstanceID()}).");
             }
         }
     }
