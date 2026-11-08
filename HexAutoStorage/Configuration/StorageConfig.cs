@@ -9,6 +9,7 @@ namespace HexAutoStorage.Configuration
         internal static ConfigEntry<float> StorageRadius;
         internal static ConfigEntry<KeyboardShortcut> EditTagsShortcut;
         internal static ConfigEntry<bool> ShowStorageRadius;
+        internal static ConfigEntry<bool> EnableDebugLogging;
 
         internal static void Bind(ConfigFile config)
         {
@@ -17,6 +18,12 @@ namespace HexAutoStorage.Configuration
                 "Enabled",
                 true,
                 "Enable or disable HexAutoStorage.");
+
+            EnableDebugLogging = config.Bind(
+                "General",
+                "EnableDebugLogging",
+                false,
+                "Write diagnostic logs for storage, container tags, and radius visuals. Does not change production speed.");
 
             StorageRadius = config.Bind(
                 "General",
@@ -38,6 +45,14 @@ namespace HexAutoStorage.Configuration
                 new KeyboardShortcut(KeyCode.P, KeyCode.LeftShift),
                 "Keyboard shortcut used to edit Auto Storage tags while looking at a container. " +
                 "Supported tags: Copper, Tin, Bronze, Iron, Silver, Blackmetal, Flametal, Coal, Flour, Eitr, Linen, Bloodgold, LiquidFrost");
+        }
+
+        internal static void DebugLog(string message)
+        {
+            if (EnableDebugLogging?.Value == true)
+            {
+                Plugin.Log?.LogInfo(message);
+            }
         }
     }
 }

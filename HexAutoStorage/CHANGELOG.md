@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.1.3
+
+### Added
+- Optional debug logging, disabled by default.
+
+### Fixed
+- Allow shared public storage regardless of who placed the station or container; skip private and group containers.
+- Improved storage checks while loading a base.
+- Fixed multiplayer tag saving and added access checks and confirmation.
+- Remotely managed containers remain skipped to prevent unsaved deposits, even when public.
+- Preserved vanilla item metadata on stored output.
+
 ## v1.1.2
 
 ### Added

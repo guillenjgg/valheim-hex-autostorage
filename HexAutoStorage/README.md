@@ -5,7 +5,7 @@ Automatically stores bars, coal, flour, linen thread, eitr, Bloodgold, and Liqui
 > ## ⚠️ Important
 > **HexAutoStorage only supports items produced by supported vanilla production stations. Mods that add custom production stations, such as custom windmills or smelters, are not guaranteed to be supported.**
 >
-> Containers must be within the configured storage radius and must have been placed by the same player who placed the production station.
+> Containers must be public and within the configured storage radius. The player who placed the container or production station does not matter. Private and group containers are skipped.
 
 ## How to Use
 
@@ -65,7 +65,6 @@ For example, if Chest B already contains Iron and has room, it will receive the 
   * Barrel
   * Reinforced Chest
   * Black Metal Chest
-  * Personal Chest
   * Cart
 * Configurable storage radius
 * Optional storage radius visualization when hovering over a production station
@@ -112,6 +111,8 @@ Tags are not case-sensitive. Use `Bloodgold` and `LiquidFrost` for the Deep Nort
 
 To remove tags, clear the tag editor and save. The container will then only receive produced items it already contains.
 
+You must be close enough to interact with the chest and have access under its privacy and ward settings. A confirmation appears when the chest's network owner saves your changes. If the save is not confirmed within 10 seconds, reopen the editor to check the saved tags. See **Multiplayer** below for installation requirements.
+
 ### Tag Example
 
 A chest tagged:
@@ -145,19 +146,37 @@ Configuration options are available in:
 Current configuration options include:
 
 * **Enabled** — Enable or disable HexAutoStorage
+* **EnableDebugLogging** — Enable diagnostic logs for storage and tag saves in Debug or Release builds. Defaults to `false`. Plugin load/unload logs always remain enabled. This setting does not change production speed.
 * **StorageRadius** — Radius in meters used to search for nearby storage
 * **ShowRadiusVisual** — Display the Auto Storage radius while hovering over a supported production station
 * **EditTagsShortcut** — Keyboard shortcut used to edit container Auto Storage tags
 
 The **EditTagsShortcut** configuration description also contains the list of supported tag names for reference.
 
+For troubleshooting, set the following under `[General]` and restart the game or server:
+
+```ini
+EnableDebugLogging = true
+```
+
+Diagnostics include storage decisions, tag-save requests, and owner confirmations. They are written to `BepInEx/LogOutput.log`. Enable logging on both the client and dedicated server when investigating a multiplayer issue. Set it back to `false` when finished.
+
 ## Multiplayer
 
-HexAutoStorage is a client-side mod.
+**Install the same version of HexAutoStorage on every player's client. For dedicated-server multiplayer, install it on the server too so it can handle tag-save requests when it owns a chest.**
 
-HexAutoStorage uses the creator of the production station when searching for nearby storage.
+Valheim uses two separate kinds of ownership:
 
-Only supported containers placed by the same player who placed the production station are considered valid Auto Storage destinations.
+* **Creator:** The player who placed the station or container. Auto storage does not require matching creators.
+* **Network owner:** The client or server currently responsible for saving an object. Valheim manages this automatically, and it can change during play.
+
+Several production stations can share one public container, even when different players placed them. Each station still checks its own radius, matching tags or existing items, and available capacity. Private and group containers are excluded, even when the same player placed them.
+
+**Limitation:** Remotely managed chests are still skipped to prevent unsaved deposits. Removing the creator restriction allows different players' stations and public chests to work together, but the computer processing production must also be the chest's current network owner.
+
+For example, if your computer processes a kiln and another player's computer or the server manages the public chest, that kiln skips the chest—even if it has a matching tag and plenty of room. HexAutoStorage tries another eligible container or lets the item drop normally. It does not take ownership away from another player. Installing the mod on every client and the server does not remove this limitation.
+
+**Container tags:** Your client sends the tag change to the chest's network owner. The owner checks your access, saves the tag, and sends confirmation. Valheim then synchronizes the saved tag with other clients. The owner must run this version of HexAutoStorage to handle the request; otherwise, the edit times out without confirmation.
 
 ## Installation
 
@@ -174,6 +193,8 @@ Install **HexAutoStorage** through your preferred Thunderstore mod manager.
    `BepInEx/plugins/HexAutoStorage/`
 
 4. Start Valheim.
+
+For a dedicated server, install BepInEx and copy the same `HexAutoStorage.dll` into the server's `BepInEx/plugins/HexAutoStorage/` folder, then restart the server. Each client and the server has its own configuration file.
 
 ## Source Code
 

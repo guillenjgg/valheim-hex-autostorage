@@ -4,6 +4,30 @@ using HexAutoStorage.Core;
 
 namespace HexAutoStorage.Patches
 {
+    [HarmonyPatch(typeof(Smelter), "UpdateSmelter")]
+    internal static class SmelterUpdateStorageReadyPatch
+    {
+        [HarmonyPrefix]
+        internal static bool Prefix(Smelter __instance)
+        {
+            if (Plugin.Instance == null || !StorageConfig.ModEnabled.Value)
+            {
+                return true;
+            }
+
+            string prefabName = __instance.gameObject.name.Replace("(Clone)", "");
+
+            if (!StoragePrefabRules.IsSupportedSmelter(prefabName))
+            {
+                return true;
+            }
+
+            // Wait before vanilla consumes fuel/ore or advances its production timestamp.
+            // Returning from Spawn alone would lose the output when vanilla clears its queue.
+            return ZNetScene.instance != null && ZNetScene.instance.IsAreaReady(__instance.transform.position);
+        }
+    }
+
     [HarmonyPatch(typeof(Smelter), nameof(Smelter.Spawn))]
     internal static class SmelterSpawnPatch
     {
@@ -22,7 +46,6 @@ namespace HexAutoStorage.Patches
                 return true;
             }
 
-            // Match vanilla GetItemConversion without directly calling its private method.
             // Fuel-only stations such as the Frost Kiln have no input item.
             Smelter.ItemConversion conversion = null;
 
@@ -46,6 +69,7 @@ namespace HexAutoStorage.Patches
             }
 
             __instance.m_produceEffects.Create(__instance.transform.position, __instance.transform.rotation, null, 1f, -1);
+            
             return false;
         }
     }

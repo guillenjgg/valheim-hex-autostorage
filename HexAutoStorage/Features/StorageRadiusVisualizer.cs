@@ -1,4 +1,4 @@
-﻿using HexAutoStorage.Configuration;
+using HexAutoStorage.Configuration;
 using UnityEngine;
 
 namespace HexAutoStorage.Features
@@ -23,7 +23,7 @@ namespace HexAutoStorage.Features
 
             if (_smelter == null)
             {
-                Plugin.Log.LogDebug($"StorageRadiusVisualizer attached to non-Smelter object: {gameObject.name}");
+                StorageConfig.DebugLog($"StorageRadiusVisualizer attached to non-Smelter object: {gameObject.name}");
                 
                 Destroy(this);
                 return;
